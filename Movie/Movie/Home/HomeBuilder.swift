@@ -6,15 +6,12 @@ class HomeBuilder {
     static func build() -> UIViewController {
         
         // 1. Cria todas as peças
-        let view = HomeViewController()
         let presenter = HomePresenter()
+        let view = HomeViewController(presenter: presenter)
         let interactor = HomeInteractor()
         let router = HomeRouter()
 
         // 2. Conecta tudo (como plugar os cabos)
-        
-        // View -> Presenter
-        view.presenter = presenter
 
         // Presenter -> View
         presenter.view = view

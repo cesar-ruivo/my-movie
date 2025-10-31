@@ -1,0 +1,49 @@
+{
+  "colors": [
+    {
+      "colorName": "white",
+      "hexadecimal": "#FFFFFF"
+    },
+    {
+      "colorName": "secondaryText",
+      "hexadecimal": "#8E8E8E"
+    },
+    {
+      "colorName": "brandBlue",
+      "hexadecimal": "#0187FE"
+    }
+  ],
+  "textStyles": [
+    {
+      "name": "title",
+      "fontName": "Poppins-Bold",
+      "size": 22,
+      "color": "white"
+    },
+    {
+      "name": "title2",
+      "fontName": "Poppins-SemiBold",
+      "size": 16,
+      "color": "white"
+    },
+    {
+      "name": "title3",
+      "fontName": "Poppins-SemiBold",
+      "size": 14,
+      "color": "white"
+    },
+    {
+      "name": "title4",
+      "fontName": "Poppins-Regular",
+      "size": 14,
+      "color": "secondaryText"
+    },
+    {
+      "name": "button",
+      "fontName": "Poppins-Regular",
+      "size": 14,
+      "color": "white"
+    }
+  ]
+}
+
