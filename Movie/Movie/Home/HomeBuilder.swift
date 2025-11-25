@@ -1,34 +1,26 @@
 import Foundation
 import UIKit
 
-class HomeBuilder {
+import UIKit
+
+final class HomeBuilder {
     
     static func build() -> UIViewController {
+        // Dependência concreta
+        let networkService = NetworkService()
         
-        // 1. Cria todas as peças
-        let presenter = HomePresenter()
-        let view = HomeViewController(presenter: presenter)
-        let interactor = HomeInteractor()
+        // Cria as peças que não precisam de ciclos imediatos
+        let interactor = HomeInteractor(networkService: networkService)
         let router = HomeRouter()
-
-        // 2. Conecta tudo (como plugar os cabos)
-
-        // Presenter -> View
-        presenter.view = view
+        let presenter = HomePresenter(interactor: interactor, router: router)
+        let view = HomeViewController(presenter: presenter)
         
-        // Presenter -> Interactor
-        presenter.interactor = interactor
-        
-        // Presenter -> Router
-        presenter.router = router
-
-        // Interactor -> Presenter
-        interactor.presenter = presenter
-        
-        // Router -> View (para o router saber de onde navegar)
+        // Conecta as referências bidirecionais de forma segura
+        interactor.setInteractorToPresenter(presenter)
+        presenter.setViwToPresenter(view)
         router.viewController = view
-
-        // 3. Retorna a View pronta
+        
         return view
     }
 }
+

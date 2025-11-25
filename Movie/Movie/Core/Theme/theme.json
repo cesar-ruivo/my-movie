@@ -11,25 +11,29 @@
     {
       "colorName": "brandBlue",
       "hexadecimal": "#0187FE"
+    },
+    {
+        "colorName": "gray",
+        "hexadecimal": "#454545"
     }
   ],
   "textStyles": [
     {
       "name": "title",
       "fontName": "Poppins-Bold",
-      "size": 22,
+      "size": 24,
       "color": "white"
     },
     {
       "name": "title2",
       "fontName": "Poppins-SemiBold",
-      "size": 16,
+      "size": 18,
       "color": "white"
     },
     {
       "name": "title3",
       "fontName": "Poppins-SemiBold",
-      "size": 14,
+      "size": 16,
       "color": "white"
     },
     {

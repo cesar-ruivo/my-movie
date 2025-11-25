@@ -6,16 +6,14 @@ class SeachBuilder {
     static func build() -> UIViewController {
         
         // 1. Cria todas as peças
-        let view = SearchViewController()
         let presenter = SearchPresenter()
+        let view = SearchViewController(presenter: presenter)
         let interactor = SearchInteractor()
         let router = SearchRouter()
 
         // 2. Conecta tudo (como plugar os cabos)
         
-        // View -> Presenter
-        view.presenter = presenter
-
+        
         // Presenter -> View
         presenter.view = view
         

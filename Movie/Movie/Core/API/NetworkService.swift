@@ -49,11 +49,6 @@ class NetworkService {
                 return
             }
             
-            print("=========================================")
-            print("DADOS BRUTOS RECEBIDOS DA REDE:")
-            print(String(data: data, encoding: .utf8) ?? "Não foi possível converter os dados para String")
-            print("=========================================")
-            
             do {
                 // Decodifica o resultado
                 let result = try JSONDecoder().decode(T.self, from: data)
