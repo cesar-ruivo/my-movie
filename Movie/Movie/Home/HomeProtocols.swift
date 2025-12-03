@@ -9,6 +9,9 @@ protocol HomeViewToPresenterProtocol {
     func setViwToPresenter(_ view: HomePresenterToViewProtocol)
     // pegar tiutlo
     func getTitleFromMovies(section: Int) -> String
+    // favorito verificar
+    func toggleFavorite(at indexPath: IndexPath)
+    func isFavorite(at indexPath: IndexPath) -> Bool
     
     func fetchNumberOfList() -> Int
 }
@@ -21,8 +24,10 @@ protocol HomePresenterToInteractorProtocol {
     func getNumberOfPopularMovies() -> Int
     // pegar a lista de filmes
     func fetchAllMovieLists()
-    func getMovie(type: HomeSections, row: Int) -> Movie? 
-
+    func getMovie(type: HomeSections, row: Int) -> Movie?
+    // favorito
+    func toggleFavorite(type: HomeSections, row: Int)
+    func isFavorite(type: HomeSections, row: Int) -> Bool
 }
 // interector -> presenter
 protocol HomeInteractorToPresenterProtocol: AnyObject {

@@ -1,16 +1,15 @@
 import Foundation
 import UIKit
 
-import UIKit
-
 final class HomeBuilder {
     
     static func build() -> UIViewController {
         // Dependência concreta
         let networkService = NetworkService()
+        let favoriteService = FavoriteService()
         
         // Cria as peças que não precisam de ciclos imediatos
-        let interactor = HomeInteractor(networkService: networkService)
+        let interactor = HomeInteractor(networkService: networkService, facoriteService: favoriteService)
         let router = HomeRouter()
         let presenter = HomePresenter(interactor: interactor, router: router)
         let view = HomeViewController(presenter: presenter)

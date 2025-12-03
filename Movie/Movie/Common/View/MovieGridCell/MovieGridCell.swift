@@ -110,6 +110,15 @@ final class MovieGridCell: UICollectionViewCell {
         return finalURL
     }
     // botao acao
+    func updateFavoriteState(isFavorite: Bool) {
+        let color: UIColor = isFavorite ? .systemYellow : .white
+        favoriteButton.tintColor = color
+        
+        let iconName = isFavorite ? "star.fill" : "star"
+        let image = UIImage(systemName: iconName)
+        favoriteButton.setImage(image, for: .normal)
+    }
+    
     @objc private func favoriteButtonTapped() {
         delegate?.didTapFavoriteButton(in: self)
     }

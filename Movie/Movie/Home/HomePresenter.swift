@@ -5,10 +5,16 @@ class HomePresenter {
     private var interactor: HomePresenterToInteractorProtocol
     private var router: HomePresenterToRouterProtocol
     private var activeSections: [HomeSections] = []
+//    private var homeSectionStorage: HomeSectionStorageProtocol
     
-    init(interactor: HomePresenterToInteractorProtocol, router: HomePresenterToRouterProtocol) {
+    init(
+        interactor: HomePresenterToInteractorProtocol,
+        router: HomePresenterToRouterProtocol,
+        homeSectionStorage: HomeSectionStorageProtocol = HomeSectionStorage()
+    ) {
         self.interactor = interactor
         self.router = router
+//        self.homeSectionStorage = homeSectionStorage
     }
     func setViwToPresenter(_ view: HomePresenterToViewProtocol) {
         self.view = view
@@ -58,17 +64,21 @@ extension HomePresenter: HomeViewToPresenterProtocol {
         switch position {
         case .nowPlaying:
             return min(5, interactor.getNumberOfNowPlayingMovies())
-//            let count = interactor.getNumberOfNowPlayingMovies()
-//            if count > 0 {
-//                return min(5, count)
-//            } else {
-//                return 0
-//            }
         case .popular:
             return interactor.getNumberOfPopularMovies()
         case .topRate:
             return interactor.getNumberOfTopRatedMovies()
         }
+    }
+    //MARK: - Favorito
+    func toggleFavorite(at indexPath: IndexPath) {
+        let sectionType = getSectionType(for: indexPath.section)
+        interactor.toggleFavorite(type: sectionType, row: indexPath.row)
+    }
+    
+    func isFavorite(at indexPath: IndexPath) -> Bool {
+        let sectionType = getSectionType(for: indexPath.section)
+        return interactor.isFavorite(type: sectionType, row: indexPath.row)
     }
 }
 

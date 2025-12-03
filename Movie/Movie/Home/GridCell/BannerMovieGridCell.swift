@@ -79,7 +79,7 @@ final class BannerMovieGridCell: UICollectionViewCell {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 8
-        view.alignment = .leading
+        view.alignment = .fill
         view.distribution = .fill
         view.translatesAutoresizingMaskIntoConstraints = false
         
@@ -142,6 +142,15 @@ final class BannerMovieGridCell: UICollectionViewCell {
     }
     
     //MARK: - botao acao
+    func updateFavoriteState(isFavorite: Bool) {
+        let color: UIColor = isFavorite ? .systemYellow : .white
+        bannerFavoriteButton.tintColor = color
+        
+        let iconName = isFavorite ? "star.fill" : "star"
+        let image = UIImage(systemName: iconName)
+        bannerFavoriteButton.setImage(image, for: .normal)
+    }
+    
     @objc private func favoriteButtonTapped() {
         delegate?.didTapFavoriteButton(in: self)
     }
@@ -167,9 +176,6 @@ extension BannerMovieGridCell: CodeView {
             bannerButton.heightAnchor.constraint(equalToConstant: 40),
             bannerFavoriteButton.widthAnchor.constraint(equalToConstant: 32),
             bannerFavoriteButton.heightAnchor.constraint(equalToConstant: 32),
-
-            bannerButtonStackView.leadingAnchor.constraint(equalTo: bannerTextStackView.leadingAnchor),
-            bannerButtonStackView.trailingAnchor.constraint(equalTo: bannerTextStackView.trailingAnchor),
         ])
     }
 

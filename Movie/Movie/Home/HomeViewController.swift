@@ -1,10 +1,11 @@
 import UIKit
 
 class HomeViewController: UIViewController, HomePresenterToViewProtocol {
+    
     //MARK: - Conectar
     
     private var presenter: HomeViewToPresenterProtocol
-    private var theme: ThemeManager
+    private var theme: ThemeManager?
     private var layoutFactory = HomeLayoutFactory.self
     
     private weak var pageControlFooter: BannerPageControlFooterView?
@@ -12,7 +13,15 @@ class HomeViewController: UIViewController, HomePresenterToViewProtocol {
     private var bannerTimer: Timer?
     private var currentBannerIndex: Int = 0
     
-    //MARK: - init
+    //MARK: - Componente UI
+    private lazy var homeHeader: HomeHeader = {
+        let view = HomeHeader()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+
+    //MARK: - Ciclo de Vida
     init(presenter: HomeViewToPresenterProtocol, theme: ThemeManager = ThemeManager.shared) {
         self.presenter = presenter
         self.theme = theme
@@ -24,17 +33,27 @@ class HomeViewController: UIViewController, HomePresenterToViewProtocol {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //MARK: - Componentes
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        startBannerTimer()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        stopBannerTimer()
+    }
+    
+    //MARK: - collectionView
     lazy var collectionView: UICollectionView = {
         let factory = HomeLayoutFactory()
         let layout = factory.createLayout { [weak self] pageIndex in
-                    guard let self = self else { return }
-                    self.currentBannerIndex = pageIndex
-                    self.pageControlFooter?.bannerPadding.currentPage = pageIndex
+            guard let self = self else { return }
+            self.currentBannerIndex = pageIndex
+            self.pageControlFooter?.bannerPadding.currentPage = pageIndex
         }
-                    sectionTypeProvider: { [weak self] sectionIndex in
-                        return self?.presenter.getSectionType(for: sectionIndex)
-                    }
+    sectionTypeProvider: { [weak self] sectionIndex in
+        return self?.presenter.getSectionType(for: sectionIndex)
+    }
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -49,6 +68,7 @@ class HomeViewController: UIViewController, HomePresenterToViewProtocol {
         collectionView.register(MovieGridCell.self, forCellWithReuseIdentifier: "Recomendado")
         collectionView.register(TitleHeaderView.self, forSupplementaryViewOfKind: "Header", withReuseIdentifier: "TitleHeader")
         
+        
         return collectionView
     }()
     
@@ -60,10 +80,9 @@ class HomeViewController: UIViewController, HomePresenterToViewProtocol {
         
         presenter.requestMovieList()
     }
-   
+    
     func reloadMovieList() {
         collectionView.reloadData()
-        startBannerTimer()
     }
 }
 
@@ -73,12 +92,17 @@ extension HomeViewController: CodeView {
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            homeHeader.topAnchor.constraint(equalTo: view.topAnchor),
+            homeHeader.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            homeHeader.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
     
     func setupAddView() {
         view.addSubview(collectionView)
+        view.addSubview(homeHeader)
     }
 }
 
@@ -93,25 +117,38 @@ extension HomeViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        //MARK: - dados das sessoes
         let sectionType = presenter.getSectionType(for: indexPath.section)
         
         switch sectionType {
         case .nowPlaying:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BannerCell", for: indexPath) as? BannerMovieGridCell else { return UICollectionViewCell() }
+            cell.delegate = self
+            
             if let movie = presenter.getMovie(at: indexPath) {
                 cell.configure(with: movie)
             }
+            
+            let isFav = presenter.isFavorite(at: indexPath)
+            cell.updateFavoriteState(isFavorite: isFav)
+            
             return cell
             
         case .popular, .topRate:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Recomendado", for: indexPath) as? MovieGridCell else { return UICollectionViewCell() }
+            cell.delegate = self
+            
             if let movie = presenter.getMovie(at: indexPath) {
                 cell.configure(with: movie)
             }
+            
+            let isFav = presenter.isFavorite(at: indexPath)
+            cell.updateFavoriteState(isFavorite: isFav)
+            
             return cell
         }
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         let sectionType = presenter.getSectionType(for: indexPath.section)
@@ -125,7 +162,7 @@ extension HomeViewController: UICollectionViewDataSource {
             let sectionPage = presenter.requestSectionFromList(section: indexPath.section)
             footerSection.configure(page: sectionPage)
             self.pageControlFooter = footerSection
-                        
+            
             return footerSection
             
         case .popular, .topRate:
@@ -146,13 +183,13 @@ extension HomeViewController: UICollectionViewDelegate {
         stopBannerTimer()
     }
     
-
+    
     func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
         if !collectionView.isDragging && !collectionView.isDecelerating {
             startBannerTimer()
         }
     }
-        
+    
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         stopBannerTimer()
     }
@@ -181,12 +218,12 @@ extension HomeViewController {
             repeats: true
         )
     }
-
+    
     private func stopBannerTimer() {
         bannerTimer?.invalidate()
         bannerTimer = nil
     }
-
+    
     @objc private func autoScrollBanner() {
         let total = presenter.requestSectionFromList(section: 0)
         guard total > 0 else { return }
@@ -194,5 +231,33 @@ extension HomeViewController {
         let nextIndexPath = IndexPath(row: nextIndex, section: 0)
         
         collectionView.scrollToItem(at: nextIndexPath, at: .centeredHorizontally, animated: true)
+    }
+}
+
+extension HomeViewController: BannerMovieGridCellDelegate, MovieGridCellDelegate {
+    
+    // Delegate do Banner
+    func didTapFavoriteButton(in cell: BannerMovieGridCell) {
+        guard let indexPath = collectionView.indexPath(for: cell) else { return }
+        
+        // 1. Manda favoritar
+        presenter.toggleFavorite(at: indexPath)
+        
+        // 2. Pergunta o novo estado
+        let isFav = presenter.isFavorite(at: indexPath)
+        
+        // 3. Atualiza a célula visualmente
+        cell.updateFavoriteState(isFavorite: isFav)
+    }
+    
+    // Delegate da Grade
+    func didTapFavoriteButton(in cell: MovieGridCell) {
+        guard let indexPath = collectionView.indexPath(for: cell) else { return }
+        
+        presenter.toggleFavorite(at: indexPath)
+        
+        let isFav = presenter.isFavorite(at: indexPath)
+        
+        cell.updateFavoriteState(isFavorite: isFav)
     }
 }

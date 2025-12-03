@@ -1,6 +1,6 @@
 import Foundation
 
-struct Movie: Decodable {
+struct Movie: Codable {
     let title: String
     let overview: String
     let poster_path: String

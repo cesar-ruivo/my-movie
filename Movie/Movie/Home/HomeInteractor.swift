@@ -3,10 +3,12 @@ import Foundation
 class HomeInteractor: HomePresenterToInteractorProtocol {
 
     private weak var presenter: HomeInteractorToPresenterProtocol?
-    private var networkService: NetworkService
+    private var networkService: NetworkServiceProtocol
+    private var favoriteService: FavoriteServiceProtocol
     
-    init(networkService: NetworkService) {
+    init(networkService: NetworkServiceProtocol, facoriteService: FavoriteServiceProtocol) {
         self.networkService = networkService
+        self.favoriteService = facoriteService
     }
     
     func setInteractorToPresenter(_ presenter: HomeInteractorToPresenterProtocol) {
@@ -69,6 +71,19 @@ class HomeInteractor: HomePresenterToInteractorProtocol {
         guard row < movieList.count else { return nil }
         
         return movieList[row]
+    }
+    //MARK: - Favorito
+    func toggleFavorite(type: HomeSections, row: Int) {
+        guard let movie = getMovie(type: type, row: row) else { return }
+        
+        let isNowFavorite = favoriteService.toggleFavorite(movie: movie)
+        
+        print("Filme \(movie.title) agora é favorito? \(isNowFavorite)")
+    }
+    
+    func isFavorite(type: HomeSections, row: Int) -> Bool {
+        guard let movie = getMovie(type: type, row: row) else { return false }
+        return favoriteService.isFavorite(movie: movie)
     }
 }
 

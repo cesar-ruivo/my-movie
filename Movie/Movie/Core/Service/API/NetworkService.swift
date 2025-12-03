@@ -1,5 +1,9 @@
 import Foundation
 
+protocol NetworkServiceProtocol {
+    func request<T: Decodable>(endPoint: EndPoint, completion: @escaping (Result<T, Error>) -> Void)
+}
+
 class NetworkService {
     func request<T: Decodable>(endPoint: EndPoint, completion: @escaping (Result<T, Error>) -> Void) {
         // 1. Criamos a URL base (sem os parâmetros)
@@ -63,4 +67,8 @@ class NetworkService {
             
         }.resume()
     }
+}
+
+extension NetworkService: NetworkServiceProtocol {
+    
 }
