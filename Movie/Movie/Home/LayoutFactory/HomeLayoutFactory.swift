@@ -23,7 +23,7 @@ struct HomeLayoutFactory {
     // Atualizamos a assinatura para receber a função
     private func createBannerSection(onPageChange: @escaping (Int) -> Void) -> NSCollectionLayoutSection {
         
-        // ... (itemSize, item, groupSize, group - IGUAIS AO SEU CÓDIGO) ...
+        
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .estimated(200)
@@ -37,13 +37,13 @@ struct HomeLayoutFactory {
         )
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         
-        // ... (footer - IGUAL AO SEU CÓDIGO) ...
+        
         let footerSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .estimated(100))
         let footer = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: footerSize, elementKind: "Footer", alignment: .bottomLeading)
         
-        // Seção
+        
         let section = NSCollectionLayoutSection(group: group)
         section.boundarySupplementaryItems = [footer]
         section.orthogonalScrollingBehavior = .groupPagingCentered
@@ -56,9 +56,7 @@ struct HomeLayoutFactory {
         return section
     }
 
-    // ... (createListSection - IGUAL AO SEU CÓDIGO) ...
     private func createListSection() -> NSCollectionLayoutSection {
-        // Copie o seu código createListSection aqui, ele estava correto.
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .absolute(150),
             heightDimension: .estimated(290))

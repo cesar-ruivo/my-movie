@@ -23,6 +23,10 @@ class HomePresenter {
 
 //MARK: - Comunicacao entre controller e presenter
 extension HomePresenter: HomeViewToPresenterProtocol {
+    func didSelectHomeHeaderIconSearch() {
+        router.routeToSearch()
+    }
+    
     func fetchNumberOfList() -> Int {
         return activeSections.count
     }
@@ -79,6 +83,11 @@ extension HomePresenter: HomeViewToPresenterProtocol {
     func isFavorite(at indexPath: IndexPath) -> Bool {
         let sectionType = getSectionType(for: indexPath.section)
         return interactor.isFavorite(type: sectionType, row: indexPath.row)
+    }
+    //MARK: - Navegacao tela
+    func didSelectMovie(at indexPath: IndexPath) {
+        guard let movie = getMovie(at: indexPath) else { return }
+        router.routeToDetails(with: movie)
     }
 }
 

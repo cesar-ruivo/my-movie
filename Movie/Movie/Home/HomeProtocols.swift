@@ -7,13 +7,12 @@ protocol HomeViewToPresenterProtocol {
     func requestMovieList()
     func getMovie(at indexPath: IndexPath) -> Movie?
     func setViwToPresenter(_ view: HomePresenterToViewProtocol)
-    // pegar tiutlo
     func getTitleFromMovies(section: Int) -> String
-    // favorito verificar
     func toggleFavorite(at indexPath: IndexPath)
     func isFavorite(at indexPath: IndexPath) -> Bool
-    
     func fetchNumberOfList() -> Int
+    func didSelectMovie(at indexPath: IndexPath)
+    func didSelectHomeHeaderIconSearch()
 }
 // Presenter -> interector
 protocol HomePresenterToInteractorProtocol {
@@ -39,5 +38,6 @@ protocol HomePresenterToViewProtocol: AnyObject {
 }
 // Presenter -> Router
 protocol HomePresenterToRouterProtocol {
-    
+    func routeToDetails(with movie: Movie)
+    func routeToSearch()
 }

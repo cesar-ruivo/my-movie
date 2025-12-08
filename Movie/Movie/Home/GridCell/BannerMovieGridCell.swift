@@ -51,7 +51,7 @@ final class BannerMovieGridCell: UICollectionViewCell {
         button.setTitle("Veja mais", for: .normal)
         button.layer.cornerRadius = 24
         button.clipsToBounds = true
-        button.addTarget(self, action: #selector(favoriteButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(seeMoreButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
@@ -153,6 +153,9 @@ final class BannerMovieGridCell: UICollectionViewCell {
     
     @objc private func favoriteButtonTapped() {
         delegate?.didTapFavoriteButton(in: self)
+    }
+    @objc private func seeMoreButtonTapped() {
+        delegate?.didTapSeeMoreButton(in: self)
     }
 }
 

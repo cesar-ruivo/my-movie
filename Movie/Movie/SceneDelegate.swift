@@ -20,12 +20,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func setupScene(windowScene: UIWindowScene) {
         
         let window: UIWindow = .init(windowScene: windowScene)
-        
+        let homeViewController = HomeBuilder.build()
 
-        let rootViewController = HomeBuilder.build()
-        window.rootViewController = rootViewController
+        let navigationController = UINavigationController(rootViewController: homeViewController)
+        window.rootViewController = navigationController
         
         self.window = window
+        
+        
         
         window.makeKeyAndVisible()
     }

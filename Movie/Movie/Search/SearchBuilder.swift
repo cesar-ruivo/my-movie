@@ -4,32 +4,18 @@ import UIKit
 class SeachBuilder {
     
     static func build() -> UIViewController {
+        let favoriteService = FavoriteService()
+        let networkService = NetworkService()
         
-        // 1. Cria todas as peças
-        let presenter = SearchPresenter()
-        let view = SearchViewController(presenter: presenter)
-        let interactor = SearchInteractor()
+        let interactor = SearchInteractor(favoriteService: favoriteService, networkService: networkService)
         let router = SearchRouter()
-
-        // 2. Conecta tudo (como plugar os cabos)
+        let presenter = SearchPresenter(interactor: interactor, router: router)
+        let view = SearchViewController(presenter: presenter)
         
-        
-        // Presenter -> View
-        presenter.view = view
-        
-        // Presenter -> Interactor
-        presenter.interactor = interactor
-        
-        // Presenter -> Router
-        presenter.router = router
-
-        // Interactor -> Presenter
-        interactor.presenter = presenter
-        
-        // Router -> View (para o router saber de onde navegar)
+        interactor.setInteractorToPresenter(presenter)
+        presenter.setView(view)
         router.viewController = view
-
-        // 3. Retorna a View pronta
+        
         return view
     }
 }

@@ -3,6 +3,7 @@ import UIKit
 
 final class HomeHeader: UIView {
     private var theme: ThemeManager?
+    weak var delegate: HomeHeaderDelegateProtocol?
     
     //MARK: - Componentes de UI
     private lazy var homeLabelTitle: UILabel = {
@@ -46,6 +47,7 @@ final class HomeHeader: UIView {
         let style = theme?.color(named: "white")
         button.setImage(starImage, for: .normal)
         button.tintColor = .white
+        button.addTarget(self, action: #selector(buttonSearchTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
 
         return button
@@ -113,5 +115,11 @@ extension HomeHeader: CodeView {
         homeStackViewGeral.addArrangedSubview(HomeButtonFavorite)
         
         addSubview(homeStackViewGeral)
+    }
+}
+//MARK: - metodos privados
+extension HomeHeader {
+    @objc private func buttonSearchTapped() {
+        delegate?.buttonSearchTapped()
     }
 }

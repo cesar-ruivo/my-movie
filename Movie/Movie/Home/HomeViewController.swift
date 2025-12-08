@@ -17,6 +17,7 @@ class HomeViewController: UIViewController, HomePresenterToViewProtocol {
     private lazy var homeHeader: HomeHeader = {
         let view = HomeHeader()
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.delegate = self
         
         return view
     }()
@@ -75,9 +76,9 @@ class HomeViewController: UIViewController, HomePresenterToViewProtocol {
     //MARK: - Inicializador
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupView()
         view.backgroundColor = UIColor(hex: "1A1A1A")
-        
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        setupView()
         presenter.requestMovieList()
     }
     
@@ -203,6 +204,18 @@ extension HomeViewController: UICollectionViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         startBannerTimer()
     }
+    //MARK: - movimentacao tela
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let sectionType = presenter.getSectionType(for: indexPath.section)
+        switch sectionType {
+        case .nowPlaying:
+            return
+        case .popular:
+            return presenter.didSelectMovie(at: indexPath)
+        case .topRate:
+            return presenter.didSelectMovie(at: indexPath)
+        }
+    }
 }
 
 //MARK: - Métodos
@@ -233,20 +246,15 @@ extension HomeViewController {
         collectionView.scrollToItem(at: nextIndexPath, at: .centeredHorizontally, animated: true)
     }
 }
-
+//MARK: - cell delegate
 extension HomeViewController: BannerMovieGridCellDelegate, MovieGridCellDelegate {
     
     // Delegate do Banner
     func didTapFavoriteButton(in cell: BannerMovieGridCell) {
         guard let indexPath = collectionView.indexPath(for: cell) else { return }
         
-        // 1. Manda favoritar
         presenter.toggleFavorite(at: indexPath)
-        
-        // 2. Pergunta o novo estado
         let isFav = presenter.isFavorite(at: indexPath)
-        
-        // 3. Atualiza a célula visualmente
         cell.updateFavoriteState(isFavorite: isFav)
     }
     
@@ -255,9 +263,18 @@ extension HomeViewController: BannerMovieGridCellDelegate, MovieGridCellDelegate
         guard let indexPath = collectionView.indexPath(for: cell) else { return }
         
         presenter.toggleFavorite(at: indexPath)
-        
         let isFav = presenter.isFavorite(at: indexPath)
-        
         cell.updateFavoriteState(isFavorite: isFav)
+    }
+    
+    func didTapSeeMoreButton(in cell: BannerMovieGridCell) {
+        guard let indexPath = collectionView.indexPath(for: cell) else { return }
+        presenter.didSelectMovie(at: indexPath)
+    }
+}
+//MARK: - Header delegate
+extension HomeViewController: HomeHeaderDelegateProtocol {
+    func buttonSearchTapped() {
+        presenter.didSelectHomeHeaderIconSearch()
     }
 }

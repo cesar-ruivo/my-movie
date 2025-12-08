@@ -6,9 +6,9 @@ class HomeInteractor: HomePresenterToInteractorProtocol {
     private var networkService: NetworkServiceProtocol
     private var favoriteService: FavoriteServiceProtocol
     
-    init(networkService: NetworkServiceProtocol, facoriteService: FavoriteServiceProtocol) {
+    init(networkService: NetworkServiceProtocol, favoriteService: FavoriteServiceProtocol) {
         self.networkService = networkService
-        self.favoriteService = facoriteService
+        self.favoriteService = favoriteService
     }
     
     func setInteractorToPresenter(_ presenter: HomeInteractorToPresenterProtocol) {
@@ -87,7 +87,7 @@ class HomeInteractor: HomePresenterToInteractorProtocol {
     }
 }
 
-// MARK: - Private Methods
+// MARK: - Metodos privado
 private extension HomeInteractor {
     private func threatRequest(result: Result<MoviesResponse, Error>, in key: MovieType, group: DispatchGroup) {
         switch result {
