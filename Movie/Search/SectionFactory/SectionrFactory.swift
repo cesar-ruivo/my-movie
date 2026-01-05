@@ -1,0 +1,106 @@
+import UIKit
+
+struct SearchSectionLayoutFactory {
+    func createLayout(onBannerPageChange: @escaping (Int) -> Void, sectionTypeProvider: @escaping (Int) -> SearchSection?) -> UICollectionViewLayout {
+        let layout = UICollectionViewCompositionalLayout { (sectionIndex, Enviroment) -> NSCollectionLayoutSection? in
+            
+            guard let sectionType = sectionTypeProvider(sectionIndex) else { return nil }
+            
+            switch sectionType {
+            case .nowPlaying:
+                return self.createListSection()
+            case .popular:
+                return self.createListSection()
+            case .topRate:
+                return self.createListSection()
+            case .search:
+                return creacteGridSection()
+            }
+        }
+        return layout
+    }
+    
+    private func creacteGridSection() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(0.5),
+            heightDimension: .estimated(350)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            item.contentInsets = .zero
+        
+
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(350)
+        )
+        
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: groupSize,
+            repeatingSubitem: item,
+            count: 2
+        )
+        group.interItemSpacing = .fixed(16)
+        
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(100)
+        )
+        let header = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize,
+            elementKind: "Header",
+            alignment: .top
+        )
+        
+        let section = NSCollectionLayoutSection(group: group)
+        
+        section.interGroupSpacing = 16
+        section.boundarySupplementaryItems = [header]
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: 0,
+            leading: 16,
+            bottom: 0,
+            trailing: 16
+        )
+        
+        return section
+    }
+    
+    private func createListSection() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .absolute(150),
+            heightDimension: .estimated(290)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .absolute(150),
+            heightDimension: .estimated(290)
+        )
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: groupSize,
+            subitems: [item]
+        )
+        
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(100)
+        )
+        let header = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize,
+            elementKind: "Header",
+            alignment: .top
+        )
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .continuous
+        section.interGroupSpacing = 16
+        section.boundarySupplementaryItems = [header]
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: 0,
+            leading: 16,
+            bottom: 0,
+            trailing: 16
+        )
+        return section
+    }
+}
