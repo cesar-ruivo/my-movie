@@ -65,4 +65,4 @@ Durante o desenvolvimento, os principais desafios e aprendizados foram:
 * [ ] Melhorar os teste unitários, cheguei a experimentar, mas falta entender melhor o conceito e ter mais prática.
 
 ---
-Desenvolvido por **Cesar Ruivo** 
+Desenvolvido por **César Ruivo** 
